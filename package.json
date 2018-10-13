@@ -1,0 +1,26 @@
+{
+  "name": "proposer_rest_api",
+  "version": "1.0.0",
+  "description": "NodeJS REST API",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:dev": "nodemon server.js",
+    "start:production": "node server.js"
+  },
+  "author": "1024Dev Productions",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bcrypt": "3.0.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "helmet": "^3.14.0",
+    "jsonwebtoken": "^8.3.0",
+    "mongoose": "^5.2.17",
+    "morgan": "^1.9.1",
+    "onesignal-node": "^2.0.0",
+    "randomstring": "^1.1.5",
+    "lodash": "latest"
+  }
+}
