@@ -64,7 +64,7 @@ router.post('/new-room', verifyTokenMiddleware, (req, res, next) => {
         })
 })
 
-router.patch('/add-user', (req, res, next) => {
+router.post('/add-user', (req, res, next) => {
 
     Room.findById(req.body.roomID, (err, room) => {
 

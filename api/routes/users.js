@@ -81,8 +81,9 @@ router.post("/login", (req, res) => {
   });
 });
 
-router.patch('/:id/add-room', verifyTokenMiddleware, (req, res, next) => {
+router.post('/:id/add-room', verifyTokenMiddleware, (req, res, next) => {
   const { id } = req.tokenDecoded;
+  console.log(req.body)
   if (id !== req.params.id) {
     return res.status(403).json({
       message: "Παρουσιάστηκε κάποιο σφάλμα",
