@@ -1,6 +1,10 @@
 const express = require("express");
+const mongoose = require('mongoose');
+
 const router = express.Router();
 const User = require("../models/users.model");
+const Room = require("../models/room.model");
+
 const jwtAuthentication = require("../authentication/auth.js");
 const jwt = require("jsonwebtoken");
 const randomstring = require("randomstring");
@@ -8,8 +12,18 @@ const { verifyTokenMiddleware } = require("../authentication/auth.js");
 
 router.get('/:id', (req, res, next) => {
   User.findById(req.params.id)
-    .then(room => { res.status(200).json(room) })
-    .catch(err => res.status(404).json({ message: 'room not found' }))
+    .select('userType username')
+    .populate({ path: 'rooms', select: 'name' })
+    .exec()
+    .then(user => {
+      if (!user) res.status(500).json({ message: "Order Not Found" })
+      res.status(200).json(user)
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: err
+      })
+    })
 })
 
 router.post('/register', (req, res, next) => {
@@ -22,7 +36,7 @@ router.post('/register', (req, res, next) => {
           message: 'Username Already Exists'
         })
       } else {
-        let newUser = new User({ username, password, userType });
+        let newUser = new User({ _id: new mongoose.Types.ObjectId(), username, password, userType });
         // newUser.verifyToken = randomstring.generate(35);
         newUser.save((err, user) => {
           if (err)

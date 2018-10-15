@@ -1,4 +1,6 @@
 const express = require("express");
+const mongoose = require('mongoose');
+
 const router = express.Router();
 const Room = require("../models/room.model");
 const User = require("../models/users.model");
@@ -14,54 +16,38 @@ router.get('/:id', (req, res, next) => {
 })
 
 router.post('/new-room', verifyTokenMiddleware, (req, res, next) => {
-    const { name, gm } = req.body
-    const { id, userType } = req.tokenDecoded;
 
-    // Checks If user is gm
-    if (userType !== 'GM') return res.status(403).json({
-        message: "Παρουσιάστηκε κάποιο σφάλμα",
-        error: { message: "Δεν είστε admin" }
+    // userModel.find({username : req.body.username}, function (err, userfound)
+    User.findById(req.body.gm, function (err, user) {
+        if (err) return res.status(500).json(err)
+        // res.status(200).json(user)
+
+        // var newArticle = new articleModel({
+        //     title : req.body.title,
+        //     text : req.body.text,
+        //     creator : userfound._id
+        // });
+        const room = new Room({
+            _id: new mongoose.Types.ObjectId(),
+            name: req.body.name,
+            gm: req.body.gm
+        });
+
+        // newArticle.save(function (err, article){
+        //         userfound.articles.push(article); //Error : Cannot read property 'push' of undefined
+        //         userfound.save();
+        //         res.send("Article enregistré : " + userfound.articles);
+        // });
+        console.log(user)
+        room.save((err, room) => {
+            if (err) return res.status(500).json({ message: 'gamw thn banagia', err: err })
+            user.rooms.unshift(room); //Error : Cannot read property 'push' of undefined
+            user.save();
+            res.status(200).json({ message: 'OK', room: room, user: user })
+        })
     });
 
-    // Checks If Token is the same as the id of gm creating the rmm
-    if (id !== gm) {
-        return res.status(403).json({
-            message: "Παρουσιάστηκε κάποιο σφάλμα",
-            error: { message: "Δεν έχετε δικαίωμα πρόσβασης" }
-        });
-    }
 
-    User
-        .findById(gm)
-        .then(gm => {
-
-            // Checks If Gm Exists
-            if (!gm) {
-                return res.status(404).json({
-                    message: 'Gm not found'
-                })
-            } else {
-                let newRoom = new Room({ name, gm });
-
-                newRoom.save((err, room) => {
-                    if (err)
-                        return res.status(500).json({
-                            message: "Το ονομα του Room υπάρχει ήδη",
-                            // error: { message: err }
-                        });
-                    return res.status(200).json({
-                        message: "Επιτυχής εγγραφή",
-                        data: {
-                            roomdId: room._id,
-                            roomName: room.name,
-                            roomGM: room.gm._id,
-                            users: room.users,
-                        }
-                    });
-                })
-
-            }
-        })
 })
 
 router.post('/add-user', (req, res, next) => {

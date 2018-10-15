@@ -1,9 +1,12 @@
 const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
 const bcrypt = require('bcrypt');
 
 const SALT_WORK_FACTOR = 10;
 
-const userSchema = new mongoose.Schema({
+const userSchema = new Schema({
+    _id: Schema.Types.ObjectId,
     username: {
         type: String,
         lowercase: true,
@@ -18,9 +21,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    rooms: [
-
-    ],
+    rooms: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Room',
+        required: true
+    }],
 
 }, {
         timestamps: true
