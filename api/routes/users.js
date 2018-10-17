@@ -86,6 +86,7 @@ router.post("/login", (req, res) => {
             username: user.username,
             id: user._id,
             token: token,
+            userType: user.userType,
             expirationDate: decoded.exp
           });
         })
