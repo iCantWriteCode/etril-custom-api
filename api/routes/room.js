@@ -85,11 +85,47 @@ router.post('/add-user', (req, res, next) => {
     });
 })
 
+router.patch('/edit-user/:roomId', (req, res, next) => {
+    // WOrking
+
+    // Room.update({ 'users.id': req.body.userId },
+    //     {
+    //         '$set': {
+
+    //             'users.$.username': "this is Update comment",
+    //         }
+    //     }, (err, room) => {
+    //         if (err) {
+    //             console.log(err);
+    //             return res.send(err);
+    //         }
+    //         return res.json(room);
+    //     }); 
+    Room.findById(req.params.roomId, (err, room) => {
+        if (err) return res.send(err)
+        let userIndex = room.users.findIndex(user => user.id === req.body.userId)
+        // res.status(200).send({ room: room, userIndex: userIndex })
+        room.users.splice(userIndex, 1)
+        room.users.push(req.body)
+        // room.users[1] = { test: "test" }
+        room.save((err, test) => {
+
+            if (err) return res.status(500).json(err)
+            console.log(test)
+            res.status(200).json(test)
+        })
+        // res.status(200).send(room.users)
+    });
+
+})
+
+
 
 router.get('/:id', (req, res, next) => {
     Room.findById(req.params.id)
         .then(room => { res.status(200).json(room) })
         .catch(err => res.status(404).json({ message: 'room not found' }))
+
 })
 
 module.exports = router;
