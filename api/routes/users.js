@@ -10,21 +10,6 @@ const jwt = require("jsonwebtoken");
 const randomstring = require("randomstring");
 const { verifyTokenMiddleware } = require("../authentication/auth.js");
 
-router.get('/:id', (req, res, next) => {
-  User.findById(req.params.id)
-    .select('userType username')
-    .populate({ path: 'rooms', select: 'name' })
-    .exec()
-    .then(user => {
-      if (!user) res.status(500).json({ message: "Order Not Found" })
-      res.status(200).json(user)
-    })
-    .catch(err => {
-      res.status(500).json({
-        error: err
-      })
-    })
-})
 
 router.post('/register', (req, res, next) => {
   const { username, password, userType } = req.body
@@ -120,6 +105,23 @@ router.post('/:id/add-room', verifyTokenMiddleware, (req, res, next) => {
     .catch(err => {
       console.log(err)
       res.status(500).json(err)
+    })
+})
+
+
+router.get('/:id', (req, res, next) => {
+  User.findById(req.params.id)
+    .select('userType username')
+    .populate({ path: 'rooms', select: 'name' })
+    .exec()
+    .then(user => {
+      if (!user) res.status(500).json({ message: "Order Not Found" })
+      res.status(200).json(user)
+    })
+    .catch(err => {
+      res.status(500).json({
+        error: err
+      })
     })
 })
 
