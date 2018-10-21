@@ -103,20 +103,15 @@ router.patch('/edit-user/:roomId', (req, res, next) => {
     //     }); 
     Room.findById(req.params.roomId, (err, room) => {
         if (err) return res.send(err)
-        let userIndex = room.users.findIndex(user => user.id === req.body.userId)
-        // res.status(200).send({ room: room, userIndex: userIndex })
+        let userIndex = room.users.findIndex(user => user.id === req.body.id)
         room.users.splice(userIndex, 1)
         room.users.push(req.body)
-        // room.users[1] = { test: "test" }
         room.save((err, test) => {
-
             if (err) return res.status(500).json(err)
             console.log(test)
             res.status(200).json(test)
         })
-        // res.status(200).send(room.users)
     });
-
 })
 
 
