@@ -47,19 +47,22 @@ router.post('/new-room', verifyTokenMiddleware, (req, res, next) => {
 })
 
 router.post('/add-user', (req, res, next) => {
-    console.log(req.body.roomId)
+    console.log(req.body)
 
     Room.findById(req.body.roomId, (err, room) => {
+
         if (err) return res.status(404).json({ message: "Room not found" });
+
         console.log(room)
+
         let currentUsers = room.users
         const isInRoom = currentUsers.findIndex(
-            user => user.id === req.body.id
+            user => user.id === req.body.userId
         );
         console.log('isInRoom', isInRoom)
         if (isInRoom <= -1) {
             currentUsers.push({
-                id: req.body.id,
+                id: req.body.userId,
                 username: req.body.username,
                 playerRace: req.body.playerRace,
                 playerClass: req.body.playerClass,
@@ -72,7 +75,7 @@ router.post('/add-user', (req, res, next) => {
             room.save((err, room) => {
                 if (err) return console.log(err);
                 console.log(room._id)
-                User.findById(req.body.id, (err, user) => {
+                User.findById(req.body.userId, (err, user) => {
                     if (err) return console.log(err)
                     user.rooms.push(room._id)
                     user.save(err, user => {
@@ -102,7 +105,7 @@ router.patch('/edit-user/:roomId', (req, res, next) => {
     //         return res.json(room);
     //     }); 
     Room.findById(req.params.roomId, (err, room) => {
-        if (err) return res.send(err)
+        if (err) return res.send({ message: "room not found", err: err })
         let userIndex = room.users.findIndex(user => user.id === req.body.id)
         room.users.splice(userIndex, 1)
         room.users.push(req.body)
