@@ -63,6 +63,7 @@ router.post('/add-user', (req, res, next) => {
         if (isInRoom <= -1) {
             currentUsers.push({
                 id: req.body.userId,
+                maps: { gurenGraslands: true },
                 username: req.body.username,
                 playerRace: req.body.playerRace,
                 playerClass: req.body.playerClass,
@@ -117,7 +118,23 @@ router.patch('/edit-user/:roomId', (req, res, next) => {
     });
 })
 
+router.patch('/maps/:roomId', (req, res, next) => {
+    // res.status(200).json({ body: req.body })
+    Room.findById(req.params.roomId)
+        .then(room => {
+            room.maps = req.body
+            // return res.status(200).json(room)
+            // return console.log(room)
 
+            room.save((err, updatedRoom) => {
+                if (err) return res.status(500).json(err)
+                res.status(200).json(updatedRoom)
+            })
+            // res.status(200).json(room)
+        })
+        .catch(err => res.status(404).json({ message: "test" }))
+
+})
 
 router.get('/:id', (req, res, next) => {
     Room.findById(req.params.id)

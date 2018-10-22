@@ -11,6 +11,7 @@ const roomSchema = Schema({
         required: true
     },
     users: [],
+    maps: {}
 });
 
 module.exports = mongoose.model('Room', roomSchema)

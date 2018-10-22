@@ -112,7 +112,7 @@ router.post('/:id/add-room', verifyTokenMiddleware, (req, res, next) => {
 router.get('/:id', (req, res, next) => {
   User.findById(req.params.id)
     .select('userType username')
-    .populate({ path: 'rooms', select: 'name' })
+    .populate({ path: 'rooms', select: 'name users' })
     .exec()
     .then(user => {
       if (!user) res.status(500).json({ message: "Order Not Found" })
