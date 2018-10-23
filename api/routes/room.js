@@ -26,7 +26,8 @@ router.post('/new-room', verifyTokenMiddleware, (req, res, next) => {
         const room = new Room({
             _id: new mongoose.Types.ObjectId(),
             name: req.body.name,
-            gm: req.body.gm
+            gm: req.body.gm,
+            maps: { gurenGraslands: true }
         });
 
         // newArticle.save(function (err, article){
